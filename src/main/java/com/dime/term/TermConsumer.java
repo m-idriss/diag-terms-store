@@ -16,18 +16,18 @@ public class TermConsumer {
   private final ObjectMapper objectMapper = new ObjectMapper();
 
   @Incoming("terms-in")
-  public void receive(Record<String, String> record) {
-    if (record == null || record.value() == null) {
+  public void receive(Record<String, String> termRecord) {
+    if (termRecord == null || termRecord.value() == null) {
       Log.warn("Received null or empty record from Kafka.");
       return;
     }
 
     try {
-      Log.infof("Received term from Kafka: %s", record.value());
-      Term term = objectMapper.readValue(record.value(), Term.class);
+      Log.infof("Received term from Kafka: %s", termRecord.value());
+      Term term = objectMapper.readValue(termRecord.value(), Term.class);
       storeTerm(term);
     } catch (JsonProcessingException e) {
-      Log.error("Failed to deserialize term record: " + record.value(), e);
+      Log.error("Failed to deserialize term record: " + termRecord.value(), e);
     } catch (Exception e) {
       Log.error("Unexpected error while processing term record", e);
     }
