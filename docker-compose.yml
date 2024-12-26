@@ -1,6 +1,26 @@
 #version: '3.9'
 
 services:
+  backend:
+    image: dime/diag-terms-store:latest
+    container_name: diag-terms-store
+    ports:
+      - "8083:8083"
+    environment:
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
+      KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+      PORT: 8083
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8083/api/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    restart: always
+    depends_on:
+      - mongoDB
+    networks:
+      - ms-network
   mongoDB:
     image: mongo:latest
     container_name: diag-mongo-db
@@ -17,25 +37,7 @@ services:
     restart: always
     networks:
       - ms-network
-  backend:
-    image: dime/diag-terms-store:latest
-    container_name: diag-terms-store
-    ports:
-      - "8081:8080"
-    depends_on:
-      - mongoDB
-    environment:
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
-      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
-    healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:8080/api/health" ]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-    restart: always
-    networks:
-      - ms-network
 networks:
   ms-network:
-    external:
-      name: diag-network
+    name: kafka-network
+    external: true

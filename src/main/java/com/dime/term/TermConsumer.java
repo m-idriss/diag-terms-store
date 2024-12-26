@@ -34,17 +34,17 @@ public class TermConsumer {
   }
 
   private void storeTerm(Term term) {
-    if (term == null || term.word == null || term.description == null) {
+    if (term == null || term.getWord() == null) {
       Log.warn("Invalid term object. Skipping persistence.");
       return;
     }
 
     try {
       Log.infof("Storing term to MongoDB: word=%s, description=%s, synonyms=%s",
-          term.word, term.description, term.synonyms);
+          term.getWord(), term.getDescription(), term.getSynonyms());
       Term.persist(term);
     } catch (Exception e) {
-      Log.error("Failed to store term to MongoDB: word=" + term.word, e);
+      Log.error("Failed to store term to MongoDB: word=" + term.getWord(), e);
     }
   }
 
