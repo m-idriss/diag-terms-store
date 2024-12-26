@@ -7,9 +7,6 @@ import io.smallrye.reactive.messaging.kafka.Record;
 import jakarta.enterprise.context.ApplicationScoped;
 import org.eclipse.microprofile.reactive.messaging.Incoming;
 
-import java.util.Collection;
-import java.util.Collections;
-
 @ApplicationScoped
 public class TermConsumer {
 
@@ -48,13 +45,4 @@ public class TermConsumer {
     }
   }
 
-  public Collection<Term> getAllTerms() {
-    Log.info("Fetching all terms from MongoDB.");
-    try {
-      return Term.listAll();
-    } catch (Exception e) {
-      Log.error("Failed to fetch terms from MongoDB", e);
-      return Collections.emptyList();
-    }
-  }
 }
