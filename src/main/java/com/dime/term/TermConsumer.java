@@ -39,7 +39,7 @@ public class TermConsumer {
     try {
       Log.infof("Storing term to MongoDB: word=%s, description=%s, synonyms=%s",
           term.getWord(), term.getDescription(), term.getSynonyms());
-      Term.persist(term);
+      term.persist();
     } catch (Exception e) {
       Log.error("Failed to store term to MongoDB: word=" + term.getWord(), e);
     }
