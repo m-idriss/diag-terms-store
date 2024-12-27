@@ -2,15 +2,24 @@ package com.dime.term;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoCollection;
 import io.quarkus.logging.Log;
 import io.smallrye.reactive.messaging.kafka.Record;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import org.bson.Document;
 import org.eclipse.microprofile.reactive.messaging.Incoming;
+
+import java.util.UUID;
 
 @ApplicationScoped
 public class TermConsumer {
 
   private final ObjectMapper objectMapper = new ObjectMapper();
+
+  @Inject
+  MongoClient mongoClient;
 
   @Incoming("terms-in")
   public void receive(Record<String, String> termRecord) {
@@ -37,12 +46,20 @@ public class TermConsumer {
     }
 
     try {
-      Log.infof("Storing term to MongoDB: word=%s, description=%s, synonyms=%s",
-          term.getWord(), term.getDescription(), term.getSynonyms());
-      term.persist();
+      Log.infof("Storing term to MongoDB: word=%s, synonyms=%s",
+          term.getWord(), term.getSynonyms());
+      Document document = new Document()
+          .append("id", UUID.randomUUID().toString())
+          .append("word", term.getWord())
+          .append("synonyms", term.getSynonyms());
+      getCollection().insertOne(document);
     } catch (Exception e) {
       Log.error("Failed to store term to MongoDB: word=" + term.getWord(), e);
     }
+  }
+
+  private MongoCollection<Document> getCollection() {
+    return mongoClient.getDatabase("term").getCollection("term");
   }
 
 }
