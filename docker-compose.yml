@@ -21,13 +21,15 @@ services:
       - mongoDB
     networks:
       - ms-network
+    volumes:
+      - backend-data:/var/lib/backend/data
   mongoDB:
     image: mongo:latest
     container_name: diag-mongo-db
     ports:
       - "27017:27017"
     volumes:
-      - ./data:/data/db
+      - mongo-data:/data/db
     environment:
       MONGO_INITDB_ROOT_USERNAME: mongo
       MONGO_INITDB_ROOT_PASSWORD: mongo
@@ -41,3 +43,6 @@ networks:
   ms-network:
     name: kafka-network
     external: true
+volumes:
+  backend-data:
+  mongo-data:
