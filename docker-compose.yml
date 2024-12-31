@@ -30,6 +30,7 @@ services:
       - "27017:27017"
     volumes:
       - mongo-data:/data/db
+      - mongo-config:/data/configdb
     environment:
       MONGO_INITDB_ROOT_USERNAME: mongo
       MONGO_INITDB_ROOT_PASSWORD: mongo
@@ -46,3 +47,4 @@ networks:
 volumes:
   backend-data:
   mongo-data:
+  mongo-config:
