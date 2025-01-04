@@ -1,31 +1,22 @@
 package com.dime.term;
 
-import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoCollection;
-import io.quarkus.logging.Log;
+import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @ApplicationScoped
-public class TermRepository {
+public class TermRepository implements PanacheRepository<Term> {
 
-  private final MongoCollection<Term> coll;
-
-  public TermRepository(MongoClient mongoClient) {
-    this.coll = mongoClient.getDatabase("term").getCollection("term", Term.class);
+  /*
+   * This method returns a term persisted in the database by its word.
+   */
+  public Term findByWord(String word) {
+    return find("word", word).firstResult();
   }
 
-  public void create(Term term) {
-    Log.infof("Storing term to MongoDB: word=%s, synonyms=%s",
-        term.getWord(), term.getSynonyms());
-    coll.insertOne(term);
+  /*
+   * This method deletes a term persisted in the database by its word.
+   */
+  public long deleteByWord(String word) {
+    return delete("word", word);
   }
-
-  public List<Term> getAllTerms() {
-    Log.infof("Retrieving all terms from MongoDB");
-    return coll.find().into(new ArrayList<>());
-  }
-
 }

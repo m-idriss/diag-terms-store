@@ -8,8 +8,6 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.eclipse.microprofile.reactive.messaging.Incoming;
 
-import java.util.List;
-
 @ApplicationScoped
 public class TermConsumer {
 
@@ -43,18 +41,13 @@ public class TermConsumer {
     }
 
     try {
-      Log.infof("Storing term to MongoDB: word=%s, synonyms=%s",
+      Log.infof("Storing term to DB: word=%s, synonyms=%s",
           term.getWord(), term.getSynonyms());
-      termRepository.create(term);
-      Log.infof("Term stored to MongoDB: word=%s", term.getWord());
+      termRepository.persist(term);
+      Log.infof("Term stored to DB: word=%s", term.getWord());
     } catch (Exception e) {
-      Log.error("Failed to store term to MongoDB: word=" + term.getWord(), e);
+      Log.error("Failed to store term to DB: word=" + term.getWord(), e);
     }
-  }
-
-  //get all terms from the database
-  public List<Term> getAllTerms() {
-    return termRepository.getAllTerms();
   }
 
 }
