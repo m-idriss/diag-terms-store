@@ -18,26 +18,29 @@ services:
       retries: 5
     restart: always
     depends_on:
-      - mongoDB
+      - postgres
     networks:
       - ms-network
     volumes:
       - backend-data:/var/lib/backend/data
-  mongoDB:
-    image: mongo:latest
-    container_name: diag-mongo-db
+  postgres:
+    image: postgres:latest
+    container_name: diag-terms-db
     ports:
-      - "27017:27017"
+      - "5432:5432"
     volumes:
-      - mongo-data:/data/db
-      - mongo-config:/data/configdb
+      - postgres-data:/var/lib/postgresql/data
     environment:
-      MONGO_INITDB_ROOT_USERNAME: mongo
-      MONGO_INITDB_ROOT_PASSWORD: mongo
-    command: mongod --auth
+      POSTGRES_DB: diag
+      POSTGRES_USER: diag
+      POSTGRES_PASSWORD: diag
     healthcheck:
-      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
-    restart: always
+      test: pg_isready -U diag
+      interval: 30s
+      timeout: 10s
+      retries: 10
+      start_period: 10s
+    restart: unless-stopped
     networks:
       - ms-network
 networks:
@@ -46,5 +49,4 @@ networks:
     external: true
 volumes:
   backend-data:
-  mongo-data:
-  mongo-config:
+  postgres-data:
