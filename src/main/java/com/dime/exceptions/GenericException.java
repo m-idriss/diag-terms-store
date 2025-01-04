@@ -1,9 +1,14 @@
 package com.dime.exceptions;
 
+import lombok.Getter;
+
+import java.io.Serial;
 import java.util.Map;
 
+@Getter
 public class GenericException extends RuntimeException {
 
+  @Serial
   private static final long serialVersionUID = -3784903329806863768L;
   private final transient GenericErrorResponse errorResponse;
   private final transient Map<String, Object> messageArguments;
@@ -11,14 +16,6 @@ public class GenericException extends RuntimeException {
   public GenericException(GenericErrorResponse errorResponse, Map<String, Object> messageArguments) {
     this.errorResponse = errorResponse;
     this.messageArguments = messageArguments;
-  }
-
-  public GenericErrorResponse getErrorResponse() {
-    return errorResponse;
-  }
-
-  public Map<String, Object> getMessageArguments() {
-    return messageArguments;
   }
 
   @Override
