@@ -6,6 +6,7 @@ import io.quarkus.logging.Log;
 import io.smallrye.reactive.messaging.kafka.Record;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 import org.eclipse.microprofile.reactive.messaging.Incoming;
 
 @ApplicationScoped
@@ -16,6 +17,10 @@ public class TermConsumer {
   @Inject
   TermRepository termRepository;
 
+  /*
+   This method is called whenever a new term is received from the Kafka topic.
+   */
+  @Transactional
   @Incoming("terms-in")
   public void receive(Record<String, String> termRecord) {
     if (termRecord == null || termRecord.value() == null) {
@@ -34,6 +39,10 @@ public class TermConsumer {
     }
   }
 
+
+  /*
+   This method persists the term to the database.
+   */
   private void storeTerm(Term term) {
     if (term == null || term.getWord() == null) {
       Log.warn("Invalid term object. Skipping persistence.");
