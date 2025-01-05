@@ -1,6 +1,7 @@
 package com.dime.term;
 
 import com.dime.exceptions.GenericError;
+import com.dime.model.TermRecord;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;

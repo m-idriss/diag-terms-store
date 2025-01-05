@@ -1,5 +1,6 @@
 package com.dime.term;
 
+import com.dime.model.TermRecord;
 import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
