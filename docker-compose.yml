@@ -13,7 +13,7 @@ services:
       PORT: 8083
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:8083/api/health" ]
-      interval: 30s
+      interval: 300s
       timeout: 10s
       retries: 5
     restart: always
@@ -36,7 +36,7 @@ services:
       POSTGRES_PASSWORD: diag
     healthcheck:
       test: pg_isready -U diag
-      interval: 30s
+      interval: 300s
       timeout: 10s
       retries: 10
       start_period: 10s
