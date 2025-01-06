@@ -20,9 +20,6 @@ public class TermResource {
   @Inject
   private TermService termService;
 
-  @Inject
-  private TermMapper termMapper;
-
   /*
    * curl -X GET http://localhost:8080/api/v1/terms/word
    */
@@ -34,7 +31,7 @@ public class TermResource {
     String wordLower = word.toLowerCase();
     Term entity = termService.findByWord(wordLower)
         .orElseThrow(() -> GenericError.WORD_NOT_FOUND.exWithArguments(Map.of("word", word)));
-    return termMapper.toRecord(entity);
+    return TermMapper.INSTANCE.toRecord(entity);
   }
 
   /*
@@ -47,7 +44,7 @@ public class TermResource {
   public TermRecord getTermById(@PathParam("id") int id) {
     Term entity = termService.findById((long) id)
         .orElseThrow(() -> GenericError.TERM_NOT_FOUND.exWithArguments(Map.of("id", id)));
-    return termMapper.toRecord(entity);
+    return TermMapper.INSTANCE.toRecord(entity);
   }
 
   /*
@@ -58,7 +55,7 @@ public class TermResource {
   @Operation(summary = "List all terms")
   public List<TermRecord> listAllTerms() {
     List<Term> terms = termService.listAll();
-    return terms.stream().map(termMapper::toRecord).toList();
+    return terms.stream().map(TermMapper.INSTANCE::toRecord).toList();
   }
 
   /*
@@ -71,9 +68,9 @@ public class TermResource {
   @Transactional
   @Operation(summary = "Create term")
   public Response createTerm(TermRecord termRecord) {
-    Term entity = termMapper.toEntity(termRecord);
+    Term entity = TermMapper.INSTANCE.toEntity(termRecord);
     Term termSaved = termService.create(entity);
-    TermRecord termRecordSaved = termMapper.toRecord(termSaved);
+    TermRecord termRecordSaved = TermMapper.INSTANCE.toRecord(termSaved);
     return Response.status(Response.Status.CREATED).entity(termRecordSaved).build();
   }
 

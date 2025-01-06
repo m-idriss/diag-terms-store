@@ -1,25 +1,18 @@
 package com.dime.term;
 
 import com.dime.model.TermRecord;
-import jakarta.enterprise.context.ApplicationScoped;
+import org.mapstruct.*;
+import org.mapstruct.factory.Mappers;
 
-@ApplicationScoped
-public class TermMapper {
+@Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.CDI)
+public interface TermMapper {
 
-  public TermRecord toRecord(Term term) {
-    TermRecord termRecord = new TermRecord();
-    termRecord.setId(term.getId());
-    termRecord.setWord(term.getWord().toLowerCase());
-    termRecord.setSynonyms(term.getSynonyms().stream().map(String::toLowerCase).toList());
-    return termRecord;
-  }
+  TermMapper INSTANCE = Mappers.getMapper(TermMapper.class);
 
-  public Term toEntity(TermRecord termRecord) {
-    Term term = new Term();
-    term.setId(termRecord.getId());
-    term.setWord(termRecord.getWord().toLowerCase());
-    term.setSynonyms(termRecord.getSynonyms().stream().map(String::toLowerCase).toList());
-    return term;
-  }
+  Term toEntity(TermRecord termRecord);
 
+  TermRecord toRecord(Term term);
+
+  @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+  Term partialUpdate(TermRecord termRecord, @MappingTarget Term term);
 }

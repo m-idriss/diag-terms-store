@@ -2,7 +2,6 @@ package com.dime.term;
 
 import com.dime.model.TermRecord;
 import io.quarkus.test.junit.QuarkusTest;
-import jakarta.inject.Inject;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -12,9 +11,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @QuarkusTest
 class TermMapperTest {
 
-  @Inject
-  private TermMapper termMapper;
-
   @Test
   void testToRecord() {
     Term term = new Term();
@@ -22,7 +18,7 @@ class TermMapperTest {
     term.setWord("word");
     term.setSynonyms(List.of("synonym1", "synonym2"));
 
-    TermRecord termRecord = termMapper.toRecord(term);
+    TermRecord termRecord = TermMapper.INSTANCE.toRecord(term);
 
     assertEquals(term.getId(), termRecord.getId());
     assertEquals(term.getWord(), termRecord.getWord());
@@ -36,7 +32,7 @@ class TermMapperTest {
     termRecord.setWord("word");
     termRecord.setSynonyms(List.of("synonym1", "synonym2"));
 
-    Term term = termMapper.toEntity(termRecord);
+    Term term = TermMapper.INSTANCE.toEntity(termRecord);
 
     assertEquals(termRecord.getId(), term.getId());
     assertEquals(termRecord.getWord(), term.getWord());
