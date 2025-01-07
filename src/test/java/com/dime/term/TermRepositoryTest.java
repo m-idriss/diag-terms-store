@@ -18,11 +18,11 @@ class TermRepositoryTest {
   @Test
   @TestTransaction
   void testFindByWord() {
-    Term term = new Term();
+    TermEntity term = new TermEntity();
     term.setWord("example");
     termRepository.persist(term);
 
-    Term found = termRepository.findByWord("example");
+    TermEntity found = termRepository.findByWord("example");
 
     assertNotNull(found);
     assertEquals("example", found.getWord());
@@ -31,7 +31,7 @@ class TermRepositoryTest {
   @Test
   @TestTransaction
   void testDeleteByWord() {
-    Term term = new Term();
+    TermEntity term = new TermEntity();
     term.setWord("example");
     termRepository.persist(term);
 
@@ -39,22 +39,22 @@ class TermRepositoryTest {
 
     assertEquals(1, deletedCount);
 
-    Term found = termRepository.findByWord("example");
+    TermEntity found = termRepository.findByWord("example");
     assertNull(found);
   }
 
   @Test
   @TestTransaction
   void testListAll() {
-    Term term1 = new Term();
+    TermEntity term1 = new TermEntity();
     term1.setWord("example1");
-    Term term2 = new Term();
+    TermEntity term2 = new TermEntity();
     term2.setWord("example2");
 
     termRepository.persist(term1);
     termRepository.persist(term2);
 
-    List<Term> terms = termRepository.listAll();
+    List<TermEntity> terms = termRepository.listAll();
 
     assertEquals(2, terms.size());
     assertTrue(terms.stream().anyMatch(t -> "example1".equals(t.getWord())));

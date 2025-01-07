@@ -10,10 +10,10 @@ public interface TermMapper {
   TermMapper INSTANCE = Mappers.getMapper(TermMapper.class);
 
   @Mapping(target = "word", source = "word", qualifiedByName = "lowercase")
-  Term toEntity(TermRecord termRecord);
+  TermEntity toEntity(TermRecord termRecord);
 
   @Mapping(target = "word", source = "word", qualifiedByName = "lowercase")
-  TermRecord toRecord(Term term);
+  TermRecord toRecord(TermEntity termEntity);
 
   @Named("lowercase")
   default String lowercase(String word) {

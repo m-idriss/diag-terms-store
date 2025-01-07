@@ -16,7 +16,7 @@ public class TermService {
   /*
    * This method returns a list of all terms persisted in the database by id ascending order
    */
-  public List<Term> listAll() {
+  public List<TermEntity> listAll() {
     return termRepository.listAll(Sort.by("id"));
   }
 
@@ -31,21 +31,21 @@ public class TermService {
    * This method returns a term by its id
    */
 
-  public Optional<Term> findById(Long id) {
+  public Optional<TermEntity> findById(Long id) {
     return Optional.ofNullable(termRepository.findById(id));
   }
 
   /*
    * This method returns a term by its word
    */
-  public Optional<Term> findByWord(String word) {
+  public Optional<TermEntity> findByWord(String word) {
     return Optional.ofNullable(termRepository.findByWord(word));
   }
 
   /*
    * This method creates a term in the database
    */
-  public Term create(Term term) {
+  public TermEntity create(TermEntity term) {
     termRepository.persist(term);
     return termRepository.findByWord(term.getWord());
   }
@@ -53,8 +53,8 @@ public class TermService {
   /*
    * This method delete a term in the database
    */
-  public Optional<Term> deleteById(Long id) {
-    Optional<Term> term = findById(id);
+  public Optional<TermEntity> deleteById(Long id) {
+    Optional<TermEntity> term = findById(id);
     term.ifPresent(termRepository::delete);
     return term;
   }

@@ -29,7 +29,7 @@ public class TermResource {
   @Operation(summary = "Get term by word")
   public TermRecord getTermByWord(@PathParam("word") String word) {
     String wordLower = word.toLowerCase();
-    Term entity = termService.findByWord(wordLower)
+    TermEntity entity = termService.findByWord(wordLower)
         .orElseThrow(() -> GenericError.WORD_NOT_FOUND.exWithArguments(Map.of("word", word)));
     return TermMapper.INSTANCE.toRecord(entity);
   }
@@ -42,7 +42,7 @@ public class TermResource {
   @Produces(MediaType.APPLICATION_JSON)
   @Operation(summary = "Get term by id")
   public TermRecord getTermById(@PathParam("id") int id) {
-    Term entity = termService.findById((long) id)
+    TermEntity entity = termService.findById((long) id)
         .orElseThrow(() -> GenericError.TERM_NOT_FOUND.exWithArguments(Map.of("id", id)));
     return TermMapper.INSTANCE.toRecord(entity);
   }
@@ -54,7 +54,7 @@ public class TermResource {
   @Produces(MediaType.APPLICATION_JSON)
   @Operation(summary = "List all terms")
   public List<TermRecord> listAllTerms() {
-    List<Term> terms = termService.listAll();
+    List<TermEntity> terms = termService.listAll();
     return terms.stream().map(TermMapper.INSTANCE::toRecord).toList();
   }
 
@@ -68,8 +68,8 @@ public class TermResource {
   @Transactional
   @Operation(summary = "Create term")
   public Response createTerm(TermRecord termRecord) {
-    Term entity = TermMapper.INSTANCE.toEntity(termRecord);
-    Term termSaved = termService.create(entity);
+    TermEntity entity = TermMapper.INSTANCE.toEntity(termRecord);
+    TermEntity termSaved = termService.create(entity);
     TermRecord termRecordSaved = TermMapper.INSTANCE.toRecord(termSaved);
     return Response.status(Response.Status.CREATED).entity(termRecordSaved).build();
   }

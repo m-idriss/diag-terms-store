@@ -1,5 +1,6 @@
 package com.dime.term;
 
+import com.dime.model.TermRecord;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.quarkus.logging.Log;
@@ -32,16 +33,18 @@ public class TermConsumer {
 
     try {
       Log.infof("Received term from Kafka: %s", termRecord.value());
-      Term term = objectMapper.readValue(termRecord.value(), Term.class);
+      TermRecord term = objectMapper.readValue(termRecord.value(), TermRecord.class);
+
+      TermEntity termEntity = TermMapper.INSTANCE.toEntity(term);
 
       // If the word in the record is different from the word in the term object,
       // add the word to the forms list.
       String word = termRecord.key();
-      if (!word.equalsIgnoreCase(term.getWord())) {
-        term.setOtherForms(List.of(word.toLowerCase()));
+      if (!word.equalsIgnoreCase(termEntity.getWord())) {
+        termEntity.setOtherForms(List.of(word.toLowerCase()));
       }
 
-      storeTerm(term);
+      storeTerm(termEntity);
     } catch (JsonProcessingException e) {
       Log.error("Failed to deserialize term record: " + termRecord.value(), e);
     } catch (Exception e) {
@@ -52,19 +55,19 @@ public class TermConsumer {
   /**
    * This method persists the term to the database.
    */
-  private void storeTerm(Term term) {
-    if (term == null || term.getWord() == null) {
+  private void storeTerm(TermEntity termEntity) {
+    if (termEntity == null || termEntity.getWord() == null) {
       Log.warn("Invalid term object. Skipping persistence.");
       return;
     }
 
     try {
       Log.infof("Storing term to DB: word=%s, synonyms=%s",
-          term.getWord(), term.getSynonyms());
-      termRepository.persist(term);
-      Log.infof("Term stored to DB: word=%s", term.getWord());
+          termEntity.getWord(), termEntity.getSynonyms());
+      termRepository.persist(termEntity);
+      Log.infof("Term stored to DB: word=%s", termEntity.getWord());
     } catch (Exception e) {
-      Log.error("Failed to store term to DB: word=" + term.getWord(), e);
+      Log.error("Failed to store term to DB: word=" + termEntity.getWord(), e);
     }
   }
 }

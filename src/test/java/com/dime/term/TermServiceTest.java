@@ -23,11 +23,11 @@ class TermServiceTest {
   @InjectMocks
   private TermService termService;
 
-  private Term term;
+  private TermEntity term;
 
   @BeforeEach
   public void setup() {
-    term = new Term();
+    term = new TermEntity();
     term.setWord("example");
     List<String> synonyms = List.of("synonym1", "synonym2");
     term.setSynonyms(synonyms);
@@ -35,14 +35,14 @@ class TermServiceTest {
 
   @Test
   void testListAll() {
-    Term term2 = new Term();
+    TermEntity term2 = new TermEntity();
     term2.setWord("example2");
     term2.setSynonyms(List.of("synonym3", "synonym4"));
-    List<Term> terms = List.of(term2, term, term2);
+    List<TermEntity> terms = List.of(term2, term, term2);
 
     when(termRepository.listAll(any(Sort.class))).thenReturn(terms);
 
-    List<Term> result = termService.listAll();
+    List<TermEntity> result = termService.listAll();
 
     assertEquals(terms, result);
     verify(termRepository, times(1)).listAll(any(Sort.class));
@@ -74,7 +74,7 @@ class TermServiceTest {
   void testGetTerm_TermInDatabase() {
     when(termRepository.findByWord("example")).thenReturn(term);
 
-    Optional<Term> result = termService.findByWord("example");
+    Optional<TermEntity> result = termService.findByWord("example");
 
     assertTrue(result.isPresent());
     assertEquals(term, result.get());

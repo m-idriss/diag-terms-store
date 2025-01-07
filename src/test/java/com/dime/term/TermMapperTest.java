@@ -13,16 +13,16 @@ class TermMapperTest {
 
   @Test
   void testToRecord() {
-    Term term = new Term();
-    term.setId(1L);
-    term.setWord("word");
-    term.setSynonyms(List.of("synonym1", "synonym2"));
+    TermEntity termEntity = new TermEntity();
+    termEntity.setId(1L);
+    termEntity.setWord("word");
+    termEntity.setSynonyms(List.of("synonym1", "synonym2"));
 
-    TermRecord termRecord = TermMapper.INSTANCE.toRecord(term);
+    TermRecord termRecord = TermMapper.INSTANCE.toRecord(termEntity);
 
-    assertEquals(term.getId(), termRecord.getId());
-    assertEquals(term.getWord(), termRecord.getWord());
-    assertEquals(term.getSynonyms(), termRecord.getSynonyms());
+    assertEquals(termEntity.getId(), termRecord.getId());
+    assertEquals(termEntity.getWord(), termRecord.getWord());
+    assertEquals(termEntity.getSynonyms(), termRecord.getSynonyms());
   }
 
   @Test
@@ -32,11 +32,11 @@ class TermMapperTest {
     termRecord.setWord("word");
     termRecord.setSynonyms(List.of("synonym1", "synonym2"));
 
-    Term term = TermMapper.INSTANCE.toEntity(termRecord);
+    TermEntity termEntity = TermMapper.INSTANCE.toEntity(termRecord);
 
-    assertEquals(termRecord.getId(), term.getId());
-    assertEquals(termRecord.getWord(), term.getWord());
-    assertEquals(termRecord.getSynonyms(), term.getSynonyms());
+    assertEquals(termRecord.getId(), termEntity.getId());
+    assertEquals(termRecord.getWord(), termEntity.getWord());
+    assertEquals(termRecord.getSynonyms(), termEntity.getSynonyms());
   }
 
 }

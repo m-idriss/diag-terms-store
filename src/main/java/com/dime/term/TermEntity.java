@@ -7,10 +7,10 @@ import lombok.Setter;
 
 import java.util.List;
 
-@Entity
+@Entity(name = "term")
 @Setter
 @Getter
-public class Term {
+public class TermEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
