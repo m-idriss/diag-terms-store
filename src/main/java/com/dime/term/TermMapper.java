@@ -9,10 +9,14 @@ public interface TermMapper {
 
   TermMapper INSTANCE = Mappers.getMapper(TermMapper.class);
 
+  @Mapping(target = "word", source = "word", qualifiedByName = "lowercase")
   Term toEntity(TermRecord termRecord);
 
+  @Mapping(target = "word", source = "word", qualifiedByName = "lowercase")
   TermRecord toRecord(Term term);
 
-  @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-  Term partialUpdate(TermRecord termRecord, @MappingTarget Term term);
+  @Named("lowercase")
+  default String lowercase(String word) {
+    return word.toLowerCase();
+  }
 }

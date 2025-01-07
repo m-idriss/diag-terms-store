@@ -25,4 +25,7 @@ public class Term {
   @ElementCollection(fetch = FetchType.EAGER)
   private List<String> synonyms;
 
+  @JsonProperty("other_forms")
+  @ElementCollection(fetch = FetchType.EAGER)
+  private List<String> otherForms;
 }

@@ -9,6 +9,8 @@ import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import org.eclipse.microprofile.reactive.messaging.Incoming;
 
+import java.util.List;
+
 @ApplicationScoped
 public class TermConsumer {
 
@@ -17,8 +19,8 @@ public class TermConsumer {
   @Inject
   TermRepository termRepository;
 
-  /*
-   This method is called whenever a new term is received from the Kafka topic.
+  /**
+   * This method is called whenever a new term is received from the Kafka topic.
    */
   @Transactional
   @Incoming("terms-in")
@@ -31,6 +33,14 @@ public class TermConsumer {
     try {
       Log.infof("Received term from Kafka: %s", termRecord.value());
       Term term = objectMapper.readValue(termRecord.value(), Term.class);
+
+      // If the word in the record is different from the word in the term object,
+      // add the word to the forms list.
+      String word = termRecord.key();
+      if (!word.equalsIgnoreCase(term.getWord())) {
+        term.setOtherForms(List.of(word.toLowerCase()));
+      }
+
       storeTerm(term);
     } catch (JsonProcessingException e) {
       Log.error("Failed to deserialize term record: " + termRecord.value(), e);
@@ -39,9 +49,8 @@ public class TermConsumer {
     }
   }
 
-
-  /*
-   This method persists the term to the database.
+  /**
+   * This method persists the term to the database.
    */
   private void storeTerm(Term term) {
     if (term == null || term.getWord() == null) {
@@ -58,5 +67,4 @@ public class TermConsumer {
       Log.error("Failed to store term to DB: word=" + term.getWord(), e);
     }
   }
-
 }
