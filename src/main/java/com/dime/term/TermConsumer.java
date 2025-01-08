@@ -24,7 +24,7 @@ public class TermConsumer {
    * This method is called whenever a new term is received from the Kafka topic.
    */
   @Transactional
-  @Incoming("terms-in")
+  @Incoming("terms-store")
   public void receive(Record<String, String> termRecord) {
     if (termRecord == null || termRecord.value() == null) {
       Log.warn("Received null or empty record from Kafka.");
