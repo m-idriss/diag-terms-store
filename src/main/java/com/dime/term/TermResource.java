@@ -13,7 +13,7 @@ import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import java.util.List;
 import java.util.Map;
 
-@Path("/api/v1/terms")
+@Path("/api/v1/store/terms")
 @Tag(name = "Terms", description = "Manage Terms")
 public class TermResource {
 
@@ -24,7 +24,7 @@ public class TermResource {
    * curl -X GET http://localhost:8080/api/v1/terms/word
    */
   @GET
-  @Path("{word: [a-zA-Z-]+}")
+  @Path("/{word: [a-zA-Z-]+}")
   @Produces(MediaType.APPLICATION_JSON)
   @Operation(summary = "Get term by word")
   public TermRecord getTermByWord(@PathParam("word") String word) {
